@@ -50,7 +50,7 @@ final class CheckServiceStatusCommand extends Command
             $serviceStatusLogs->setService($service); 
             if ($checkService['status'] == 'OK') $serviceStatusLogs->setStatus('OK'); 
             if ($checkService['status']  == 'KO') $serviceStatusLogs->setStatus('KO'); 
-            if ($checkService['status'] == 'problem') $serviceStatusLogs->setStatus('Problème existant'); 
+            if ($checkService['status'] == 'problem') $serviceStatusLogs->setStatus('problem'); 
             $serviceStatusLogs->setCheckedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'))); 
             $serviceStatusLogs->setContentResponse($checkService['content']); 
             $this->entityManager->persist($serviceStatusLogs); 
@@ -107,8 +107,7 @@ final class CheckServiceStatusCommand extends Command
 
         return $response->getStatusCode() == 200 ? [
             'status' => 'OK', 
-            'content' => $response->getContent(), 
-            'availability_rate' => 99.99] : ['status' => 'KO']; 
+            'content' => $response->getContent()] : ['status' => 'KO']; 
     } 
 
     private function checkServiceApi($api, $token) 
@@ -138,24 +137,24 @@ final class CheckServiceStatusCommand extends Command
         foreach ($groupes as $service => $events) {
             $interruption = new Interruption();
             $interruption->setService($service);
-            $dernier_debut = null;
-            $dernier_fin = null;
+            $last_start = null;
+            $last_end = null;
         
             for ($i = count($events) - 1; $i >= 0; $i--) {
                 if ($events[$i]->getStatus() === 'OK') {
-                    $dernier_fin = $events[$i]->getCheckedAt();
+                    $last_end = $events[$i]->getCheckedAt();
                 }
         
-                if ($events[$i]->getStatus() === 'KO' && $dernier_fin) {
-                    $dernier_debut = $events[$i]->getCheckedAt();
-                    break; // on a trouvé la dernière paire non fonctionnel → fonctionnel
+                if (($events[$i]->getStatus() === 'KO' || $events[$i]->getStatus() === 'problem' ) && $last_end) {
+                    $last_start = $events[$i]->getCheckedAt();
+                    break; // get last no fonctionel → fonctionel
                 }
 
             }
         
-            if ($dernier_debut && $dernier_fin) {
-                $interruption->setStart($dernier_debut);
-                $interruption->setEndDate($dernier_fin);
+            if ($last_start && $last_end) {
+                $interruption->setStart($last_start);
+                $interruption->setEndDate($last_end);
             }
             
             $this->entityManager->persist($interruption);

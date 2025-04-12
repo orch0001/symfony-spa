@@ -56,7 +56,7 @@ class ServiceStatusLogsRepository extends ServiceEntityRepository
 
     { 
         $now = new \DateTimeImmutable(); 
-        $since = $now->sub(new \DateInterval('P7D')); // P1D = 7 days 
+        $since = $now->sub(new \DateInterval('P7D')); // P7D = 7 days 
 
         $qb = $this->createQueryBuilder('e') 
             ->select('COUNT(e.id) as totalChecks') 

@@ -20,7 +20,12 @@
               <td>{{ entry.service.name }}</td>
               <td>
                 <button :class="['btn', statusClass(entry.status)]">
-                  {{ entry.status }}
+                  <p v-if="entry.status === 'OK'">Fonctionnel</p>
+                  <p v-else-if="entry.status === 'KO'">Non fonctionnel</p>
+                  <p v-else-if="entry.status === 'problem'">
+                    Problème existant
+                  </p>
+                  <p v-else class="text-muted">Statut inconnu</p>
                 </button>
               </td>
             </tr>
@@ -65,7 +70,7 @@ export default {
         {
           OK: "btn-success",
           KO: "btn-danger",
-          "Problème existant": "btn-warning",
+          problem: "btn-warning",
         }[status] || ""
       );
     },
