@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Services{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row row-cols-2">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"> Statut actuel </h5>
+                </div>
+                <div class="card-body">
+                     <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Statut</th>
+                                <th>Date de check</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for serviceStatus in serviceStatusLogs %}
+                            <tr>
+                                <td>
+                                    {{ serviceStatus.service.name }}
+                                </td>
+                                <td>
+                                    {% if serviceStatus.status == 'OK' %}
+                                        <a href="#" class="btn btn-success">Fonctionnel </a>
+                                    {% elseif serviceStatus.status == 'KO'%}
+                                        <a href="#" class="btn btn-danger">Non fonctionnel</a>
+                                    {% elseif serviceStatus.status == 'Problème existant'%}
+                                        <a href="#" class="btn btn-warning">Exising problem</a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ serviceStatus.checkedAt|date('Y-m-d H:i') }}</td>
+                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"> Le taux de disponibilité des dernières 24 heures </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Taux</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for arh in availabilityRate24Hours %}
+                            <tr>
+                                <td>{{ arh.service }}</td>
+                                <td> {{ arh.rate|number_format(3) }} %</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"> Le taux de disponibilité des derniers 7 jours </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Taux</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ard in availabilityRate7Days %}
+                            <tr>
+                                <td>{{ ard.service }}</td>
+                                <td> {{ ard.rate|number_format(3) }} %</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div> 
+        </div> 
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"> les 5 dernières interruptions de service </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Début</th>
+                                <th>Fin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for interruption in interruptions %}
+                            <tr>
+                                <td>{{ interruption.service }}</td>
+                                <td>{{ interruption.start|date('Y-m-d H:i') }} </td>
+                                <td> {{ interruption.endDate|date('Y-m-d H:i') }} </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
+
+
+{% endblock %}
