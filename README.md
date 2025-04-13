@@ -16,18 +16,22 @@ You can check if your computer meets all requirements with : `symfony check:requ
 - Install JavaScript dependencies using Yarn (or npm):
     * `yarn install`
    
-5. Create the database and run migrations
+3. Create the database and run migrations
    * `php bin/console doctrine:database:create`
    * `php bin/console make:migration`
    * `php bin/console doctrine:migrations:migrate`
-  
 
-7. Start the Symfony server
-   * `symfony server:start`
-
-8. Build Frontend (Webpack Encore)
+4. Build Frontend (Webpack Encore)
    * `yarn encore dev`         # for development
    * `yarn encore production`  # for production
+  
+5. Start the Symfony server
+   * `symfony server:start`
+  
+6.  Execut commands from cmd
+    * `php bin/console app:check-service-status`
+    * `php bin/console app:check-availability-rate-7`
+    * `php bin/console app:check-availability-rate-24` 
 
 
 # Setting Up a Cron Job for Symfony Command
